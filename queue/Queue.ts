@@ -1,8 +1,8 @@
 /**
  * Define the items in the queue
  */
-class QueueItem {
-  value: string;
+export class QueueItem {
+  value: any;
 
   constructor(value: string) {
     this.value = value;
@@ -17,7 +17,7 @@ class QueueItem {
  * However, if you're looking for high-perf a Set could be used.
  * The downside/catch is each item in a set has to be unique.
  */
-class Queue {
+export class Queue {
   /* Stores the items pushed into the queue */
   private items: QueueItem[] = [];
 

@@ -1,3 +1,20 @@
+class Queue {
+  items: any[] = [];
+
+  get size() {
+    return this.items.length;
+  }
+
+  push(item: GraphNode) {
+    this.items.push(item);
+    return this;
+  }
+
+  next(): GraphNode | undefined {
+    return this.items.shift();
+  }
+}
+
 type NodeValue = string;
 
 /**
@@ -60,7 +77,10 @@ class Graph {
   }
 
   // Adds an edge by connecting the adjacents between a source node an a destination
-  addEdge(source: NodeValue, destination: NodeValue): GraphNode[] | undefined {
+  addEdge(
+    source: NodeValue,
+    destination: NodeValue
+  ): (GraphNode | undefined)[] {
     const sourceNode = this.addNode(source);
     const destinationNode = this.addNode(destination);
     if (sourceNode && destinationNode) {
@@ -68,8 +88,8 @@ class Graph {
       if (!this.directed) {
         destinationNode.addAdjacent(sourceNode);
       }
-      return [sourceNode, destinationNode];
     }
+    return [sourceNode, destinationNode];
   }
 
   removeEdge(
@@ -88,6 +108,31 @@ class Graph {
       return [sourceNode, destinationNode];
     }
   }
+
+  /**
+   * Breadth-first search (BFS) starts at the tree root (or some
+   * arbitrary node of a graph and explores the adjacent nodes first,
+   * before moving to the next level adjacents.
+   *
+   * Using a generator (*) allows us to yield the next node in the
+   * graph on each iteration of the loop.
+   */
+  *breadthSearch(first: GraphNode | undefined) {
+    // Maintain a store of visited nodes during traversal
+    const visited = new Map();
+    const visitList = new Queue();
+
+    if (first) visitList.push(first);
+
+    while (visitList.size > 0) {
+      const node = visitList.next();
+      if (node && !visited.has(node)) {
+        yield node;
+        visited.set(node, null);
+        node.adjacents.forEach(adj => visitList.push(adj));
+      }
+    }
+  }
 }
 
 //
@@ -102,9 +147,29 @@ class Graph {
 
 const graph = new Graph(false);
 
-graph.addEdge('a', 'c');
+const [first] = graph.addEdge('a', 'c');
 graph.addEdge('a', 'b');
 graph.addEdge('c', 'd');
 graph.addEdge('b', 'c');
 
-console.log(graph.nodes);
+console.log('~~~~~~~~~~~~~~~~~~ \nGraph Nodes:');
+
+for (let [key, value] of graph.nodes) {
+  console.log(
+    key,
+    value.adjacents.map(a => a.value)
+  );
+}
+
+console.log('~~~~~~~~~~~~~~~~~~ \nBreadth-First Search:');
+const bfs: IterableIterator<GraphNode> = graph.breadthSearch(first);
+
+console.log(
+  bfs.next().value.value,
+  '> ',
+  bfs.next().value.value,
+  '> ',
+  bfs.next().value.value,
+  '> ',
+  bfs.next().value.value
+);
