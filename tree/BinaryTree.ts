@@ -13,6 +13,13 @@ class BSTNode {
   }
 }
 
+/**
+ * A binary search tree (BST) is a binary tree where each node
+ * has a value, a left prop (less than) and a right prop
+ * (greater than).
+ * The left and right props are also BSTs so the tree is recursive
+ * and can be traversed.
+ */
 class BST {
   root: BSTNode | null = null;
 

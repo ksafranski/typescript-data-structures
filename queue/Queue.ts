@@ -12,8 +12,9 @@ export class QueueItem {
 /**
  * Create the Queue class which stores an array of items and uses
  * First-In Last-Out (FILO)
- * Note: Arrays work fine in most cases because you wouldn't typically
- * write a queue for large data sets; you'd use a queuing system.
+ * Note: Arrays work fine in most cases for `items` in the queue
+ * because you wouldn't typically write a queue for large data sets;
+ * you'd use a queuing system.
  * However, if you're looking for high-perf a Set could be used.
  * The downside/catch is each item in a set has to be unique.
  */
